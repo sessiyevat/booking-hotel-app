@@ -18,7 +18,7 @@ Booking Hotel is a SwiftUI-based iOS application designed to provide users with 
 
 ## Demo
 
-<img src="https://github.com/sessiyevat/booking-hotel-app/assets/78643530/d1457b78-4030-48cb-9203-32e8103c8891" width="250">
+<img src="https://github.com/sessiyevat/booking-hotel-app/assets/78643530/3d6cbab3-76ac-4759-8257-824409f81827" width="250">
 
 ## Design
 
