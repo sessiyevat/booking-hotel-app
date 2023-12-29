@@ -1,5 +1,5 @@
 //
-//  TouristInfoView.swift
+//  TouristDetailView.swift
 //  BookingHotel
 //
 //  Created by Tomiris Sessiyeva on 12/25/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TouristInfoView: View {
+struct TouristDetailView: View {
     
     // MARK: - Properties
     
@@ -58,10 +58,10 @@ struct TouristInfoView: View {
                 VStack(alignment: .leading) {
                     InputField(type: .default, placeHolderText: Constants.Text.name, text: $tourist.name, isValid: $isValidInfo)
                     InputField(type: .default, placeHolderText: Constants.Text.surname, text: $tourist.surname, isValid: $isValidInfo)
-                    InputField(type: .default, placeHolderText: Constants.Text.birthDate, text: $tourist.birthDate, isValid: $isValidInfo)
+                    InputField(type: .date(pattern: Constants.Text.datePattern, type: .birthDate), placeHolderText: Constants.Text.birthDate, text: $tourist.birthDate, isValid: $isValidInfo)
                     InputField(type: .default, placeHolderText: Constants.Text.citizenship, text: $tourist.citizenship, isValid: $isValidInfo)
-                    InputField(type: .default, placeHolderText: Constants.Text.passportNo, text: $tourist.passportNo, isValid: $isValidInfo)
-                    InputField(type: .default, placeHolderText: Constants.Text.passportExp, text: $tourist.validationDate, isValid: $isValidInfo)
+                    InputField(type: .passportNo, placeHolderText: Constants.Text.passportNo, text: $tourist.passportNo, isValid: $isValidInfo)
+                    InputField(type: .date(pattern: Constants.Text.datePattern, type: .passportValidationDate), placeHolderText: Constants.Text.passportExp, text: $tourist.validationDate, isValid: $isValidInfo)
                 }
             }
         }
@@ -73,7 +73,7 @@ struct TouristInfoView: View {
 
 // MARK: - Constants
 
-extension TouristInfoView {
+extension TouristDetailView {
     private enum Constants {
         enum Layout {
             static let cornerRadius: CGFloat = 12
@@ -92,6 +92,7 @@ extension TouristInfoView {
             static let passportNo: String = "Номер загранпаспорта"
             static let passportExp: String = "Срок действия загранпаспорта"
             static let tourist: String = "турист"
+            static let datePattern: String = "__.__.____"
         }
     }
 }

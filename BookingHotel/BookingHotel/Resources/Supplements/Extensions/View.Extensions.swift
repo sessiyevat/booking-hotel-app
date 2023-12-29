@@ -9,7 +9,7 @@ import SwiftUI
 
 extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape( RoundedCorner(radius: radius, corners: corners) )
+        clipShape( RoundedCornerShape(radius: radius, corners: corners) )
     }
     
     func sectionCustomStyle(padding: CGFloat = 16, cornerRadius: CGFloat = 0) -> some View {
@@ -19,8 +19,26 @@ extension View {
             .cornerRadius(cornerRadius)
     }
     
-    func navigationBarBackButtonTitleHidden() -> some View {
-      self.modifier(NavigationBarBackButtonTitleHiddenModifier())
+    func textFieldStyle() -> some View {
+        self
+            .font(.system(size: 16))
+            .foregroundColor(.black)
+    }
+    
+    func dragToDismiss() -> some View {
+      self.modifier(DragToDismissModifier())
+    }
+    
+    func customNavigationTitle(_ title: String) -> some View {
+        preference(key: CustomNavigationBarTitlePreferenceKey.self, value: title)
+    }
+    
+    func customNavigationBackButtonHidden(_ hidden: Bool) -> some View {
+        preference(key: CustomNavigationBackButtonPreferenceKey.self, value: hidden)
+    }
+    
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
     @_disfavoredOverload
@@ -28,7 +46,7 @@ extension View {
         if #available(iOS 14, *) {
             onChange(of: value, perform: action)
         } else {
-            modifier(ChangeObserver(newValue: value, action: action))
+            modifier(ChangeObserverModifier(newValue: value, action: action))
         }
     }
 }

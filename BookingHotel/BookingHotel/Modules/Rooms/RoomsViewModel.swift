@@ -16,7 +16,7 @@ final class RoomsViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     
     var hotel: Hotel
-    var coordinator: AppCoordinator<MainRouter>?
+    var coordinator: AppCoordinator<MainNavigationRouter>?
     
     private var cancellables: Set<AnyCancellable> = []
     private let networkService = NetworkService.shared

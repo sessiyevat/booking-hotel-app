@@ -1,5 +1,5 @@
 //
-//  BookingDetailView.swift
+//  BookingDetailRow.swift
 //  BookingHotel
 //
 //  Created by Tomiris Sessiyeva on 12/21/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BookingDetailView: View {
+struct BookingDetailRow: View {
     let name: String
     let description: String
     

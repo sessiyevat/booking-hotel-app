@@ -12,15 +12,18 @@ final class NetworkService {
     
     static let shared = NetworkService()
     
-    private func createRequest(for url: String, httpMethod: HTTPMethod = .GET) -> URLRequest? {
-        guard let url = URL(string: url) else { return nil }
+    private func createRequest(for apiKey: String) -> URLRequest? {
+        guard let url = URL(string: "\(Constants.baseURL)\(apiKey)") else { return nil }
         var request = URLRequest(url: url)
-        request.httpMethod = httpMethod.rawValue
+        request.httpMethod = HTTPMethod.GET.rawValue
         request.setValue(Constants.contentType, forHTTPHeaderField: Constants.contentHeaderField)
         return request
     }
     
-    private func executeRequest<T: Codable>(request: URLRequest) -> AnyPublisher<T, Error> {
+    private func executeRequest<T: Codable>(apiKey: String) -> AnyPublisher<T, Error> {
+        guard let request = createRequest(for: apiKey) else {
+            return Fail(error: NetworkError.invalidUrl).eraseToAnyPublisher()
+        }
         return URLSession.shared.dataTaskPublisher(for: request)
             .map(\.data)
             .decode(type: T.self, decoder: JSONDecoder())
@@ -28,17 +31,11 @@ final class NetworkService {
     }
 
     func getHotelData() -> AnyPublisher<Hotel, Error> {
-        guard let request = createRequest(for: "\(Constants.baseURL)\(Constants.hotelAPIKey)") else {
-            return Fail(error: NetworkError.invalidUrl).eraseToAnyPublisher()
-        }
-        return executeRequest(request: request)
+        return executeRequest(apiKey: Constants.hotelAPIKey)
     }
 
     func getRoomsData() -> AnyPublisher<Rooms, Error> {
-        guard let request = createRequest(for: "\(Constants.baseURL)\(Constants.roomsAPIKey)") else {
-            return Fail(error: NetworkError.invalidUrl).eraseToAnyPublisher()
-        }
-        return executeRequest(request: request)
+        return executeRequest(apiKey: Constants.roomsAPIKey)
     }
 }
 

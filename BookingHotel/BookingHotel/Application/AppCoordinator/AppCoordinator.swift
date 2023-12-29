@@ -48,7 +48,6 @@ open class AppCoordinator<Router: NavigationRouter>: ObservableObject {
     
     open func dismiss(animated: Bool = true) {
         navigationController.dismiss(animated: true) { [weak self] in
-            /// because there is a leak in UIHostingControllers that prevents from deallocation
             self?.navigationController.viewControllers = []
         }
     }

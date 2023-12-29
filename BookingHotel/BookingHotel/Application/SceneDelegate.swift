@@ -9,7 +9,7 @@ import SwiftUI
 
 final class SceneDelegate: NSObject, UIWindowSceneDelegate {
         
-    private let coordinator: AppCoordinator<MainRouter> = .init(startingRoute: .hotel)
+    private let coordinator: AppCoordinator<MainNavigationRouter> = .init(startingRoute: .hotel)
     
     var window: UIWindow?
 

@@ -22,43 +22,43 @@ final class BookingViewModel: ObservableObject {
     @Published var isNotValidEmail: Bool = false
     @Published var isNotValidInfo = false
     
-    var coordinator: AppCoordinator<MainRouter>?
+    var coordinator: AppCoordinator<MainNavigationRouter>?
     
     // MARK: - Computed Properties
        
     var totalCost: Int {
-       return tourists.count * selectedRoom.price
+        return tourists.count * selectedRoom.price
     }
 
     var fuelFee: Int {
-       return Int(Double(totalCost) * 0.05)
+        return Int(Double(totalCost) * 0.05)
     }
 
     var serviceFee: Int {
-       return Int(Double(totalCost) * 0.01)
+        return Int(Double(totalCost) * 0.01)
     }
 
     var totalSum: Int {
-       return totalCost + fuelFee + serviceFee
+        return totalCost + fuelFee + serviceFee
     }
 
     private var isValidPhone: Bool {
-       return !phone.isEmpty
+        return !phone.isEmpty && !phone.contains("*")
     }
 
     private var isValidEmail: Bool {
-       return !email.isEmpty && email.validateEmail()
+        return !email.isEmpty && email.isValidEmail()
     }
 
     private var isValidTouristsInfo: Bool {
-       return tourists.allSatisfy { tourist in
-           !tourist.name.isEmpty &&
-           !tourist.surname.isEmpty &&
-           !tourist.citizenship.isEmpty &&
-           !tourist.birthDate.isEmpty &&
-           !tourist.passportNo.isEmpty &&
-           !tourist.validationDate.isEmpty
-       }
+        return tourists.allSatisfy { tourist in
+           tourist.name.containsOnlyLetters() &&
+           tourist.surname.containsOnlyLetters() &&
+           tourist.citizenship.containsOnlyLetters() &&
+           tourist.birthDate.isValidDate(ofType: .birthDate) &&
+           tourist.passportNo.containsLettersAndDigits() &&
+           tourist.validationDate.isValidDate(ofType: .passportValidationDate)
+        }
     }
         
     // MARK: - Initializer

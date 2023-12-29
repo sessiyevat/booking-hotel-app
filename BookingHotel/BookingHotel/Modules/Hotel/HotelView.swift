@@ -11,7 +11,7 @@ struct HotelView: View {
     
     // MARK: - Properties
     
-    @EnvironmentObject private var coordinator: AppCoordinator<MainRouter>
+    @EnvironmentObject private var coordinator: AppCoordinator<MainNavigationRouter>
     @ObservedObject private var viewModel: HotelViewModel = HotelViewModel()
     
     // MARK: - Body
@@ -19,52 +19,53 @@ struct HotelView: View {
     var body: some View {
         if viewModel.isLoading {
             ActivityIndicator(isAnimating: viewModel.isLoading)
+                .navigationBarHidden(true)
         } else {
-            content
+            CustomNavigationView {
+                content
+                    .customNavigationTitle(Constants.Text.title)
+                    .customNavigationBackButtonHidden(true)
+            }
         }
     }
     
     // MARK: - View Components
     
     private var content: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: Constants.Layout.stackSpacing) {
-                hotelBasicInfo
-                    .sectionCustomStyle()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .cornerRadius(Constants.Layout.cornerRadius, corners: [.bottomLeft, .bottomRight])
-
-                additionalInfo
-                    .sectionCustomStyle()
-                    .cornerRadius(Constants.Layout.cornerRadius)
-                
-                VStack(spacing: .zero) {
-                    Divider()
-                        .background(Color.lineColor)
-                    CustomButton(text: Constants.Text.buttonTitle, attribute: .init()) {
-                        viewModel.navigateToHotelRooms()
-                    }
-                    .padding(.horizontal, Constants.Layout.defaultPadding)
-                    .padding(.vertical, Constants.Layout.descriptionTopPadding)
-                }
+        VStack(spacing: Constants.Layout.stackSpacing) {
+            basicInfo
+                .padding([.leading, .bottom, .trailing], Constants.Layout.defaultPadding)
                 .background(Color.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .cornerRadius(Constants.Layout.cornerRadius, corners: [.bottomLeft, .bottomRight])
+
+            additionalInfo
+                .sectionCustomStyle()
+                .cornerRadius(Constants.Layout.cornerRadius)
+            
+            VStack(spacing: .zero) {
+                Divider()
+                    .background(Color.lineColor)
+                CustomButton(text: Constants.Text.buttonTitle, attribute: .init()) {
+                    viewModel.navigateToHotelRooms()
+                }
+                .padding(.horizontal, Constants.Layout.defaultPadding)
+                .padding(.vertical, Constants.Layout.descriptionTopPadding)
             }
-            .onAppear {
-                viewModel.coordinator = coordinator
-                configureNavigationBar()
-            }
+            .background(Color.white)
+        }
+        .onAppear {
+            viewModel.coordinator = coordinator
         }
         .background(Color.backgroundMain)
-        .background(Color.white.edgesIgnoringSafeArea(.all))
-        .navigationBarTitle(Constants.Text.title)
     }
     
-    private var hotelBasicInfo: some View {
+    private var basicInfo: some View {
         VStack(alignment: .leading, spacing: Constants.Layout.infoStackSpacing) {
             
             if !viewModel.hotel.image_urls.isEmpty {
                 ImageCarouselView(
-                    images: viewModel.hotel.image_urls,
+                    imageUrls: viewModel.hotel.image_urls,
                     height: Constants.Layout.carouselHeight
                 )
             }
@@ -106,7 +107,7 @@ struct HotelView: View {
                 .font(.system(size: 22, weight: .medium))
                 .foregroundColor(.black)
 
-            ChipsView(items: viewModel.hotel.about_the_hotel.peculiarities)
+            ChipsContentView(items: viewModel.hotel.about_the_hotel.peculiarities)
                 .padding(.top, Constants.Layout.defaultPadding)
             
             Text(viewModel.hotel.about_the_hotel.description)
@@ -153,18 +154,6 @@ struct HotelView: View {
             .background(Color.textPrimaryGray.opacity(0.15))
             .padding([.top, .bottom], Constants.Layout.dividerVerticalPadding)
             .padding(.leading, Constants.Layout.dividerLeftPadding)
-    }
-    
-    // MARK: - Private Methods
-    
-    private func configureNavigationBar() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
-        
-        coordinator.navigationController.navigationBar.standardAppearance = appearance
     }
 }
 

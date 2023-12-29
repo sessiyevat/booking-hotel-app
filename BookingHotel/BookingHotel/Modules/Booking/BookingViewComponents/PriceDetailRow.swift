@@ -1,5 +1,5 @@
 //
-//  PaymentDetailView.swift
+//  PriceDetailRow.swift
 //  BookingHotel
 //
 //  Created by Tomiris Sessiyeva on 12/25/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PaymentDetailView: View {
+struct PriceDetailRow: View {
     let name: String
     let price: Int
     let isTotalPrice: Bool

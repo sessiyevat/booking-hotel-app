@@ -1,5 +1,5 @@
 //
-//  RoomCellView.swift
+//  RoomCardView.swift
 //  BookingHotel
 //
 //  Created by Tomiris Sessiyeva on 12/25/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RoomCellView: View {
+struct RoomCardView: View {
     var room: Room
     var action: () -> Void
 
@@ -16,7 +16,7 @@ struct RoomCellView: View {
             VStack(alignment: .leading, spacing: Constants.Layout.stackSpacing) {
                 
                 ImageCarouselView(
-                    images: room.image_urls,
+                    imageUrls: room.image_urls,
                     height: Constants.Layout.carouselHeight
                 )
                 
@@ -24,7 +24,7 @@ struct RoomCellView: View {
                     .font(.system(size: 22, weight: .medium))
                     .foregroundColor(.black)
                 
-                ChipsView(items: room.peculiarities)
+                ChipsContentView(items: room.peculiarities)
                 
                 ChipView(
                     title: Constants.Text.lastChipTitle,
@@ -38,7 +38,6 @@ struct RoomCellView: View {
                 Text("\(room.price.formattedString()) ₽")
                     .font(.system(size: 30, weight: .semibold))
                     .foregroundColor(.black)
-//                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text(room.price_per)
                     .font(.system(size: 16))
                     .foregroundColor(.textPrimaryGray)
@@ -57,7 +56,7 @@ struct RoomCellView: View {
     }
 }
 
-extension RoomCellView {
+extension RoomCardView {
     private enum Constants {
         enum Layout {
             static let stackSpacing: CGFloat = 8

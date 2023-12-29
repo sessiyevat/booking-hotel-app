@@ -18,4 +18,5 @@ public extension Color {
     static let lineColor = Color("lineColor")
     static let placeholderColor = Color("placeholderColor")
     static let errorColor = Color("errorColor").opacity(0.15)
+    static let shadowColor = Color("shadowColor")
 }

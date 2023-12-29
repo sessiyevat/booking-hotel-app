@@ -11,13 +11,13 @@ struct BookingView: View {
     
     // MARK: - Properties
         
-    @EnvironmentObject private var coordinator: AppCoordinator<MainRouter>
+    @EnvironmentObject private var coordinator: AppCoordinator<MainNavigationRouter>
     @ObservedObject var viewModel: BookingViewModel
     
     // MARK: - Body
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        CustomNavigationView {
             VStack(spacing: Constants.Layout.stackSpacing) {
                 hotelBasicInfo
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -40,6 +40,7 @@ struct BookingView: View {
                     Divider()
                         .background(Color.lineColor)
                     CustomButton(text: Constants.Text.pay, attribute: .init()) {
+                        hideKeyboard()
                         viewModel.checkForValidation()
                     }
                     .padding(.horizontal, Constants.Layout.defaultPadding)
@@ -47,14 +48,13 @@ struct BookingView: View {
                 }
                 .background(Color.white)
             }
+            .onAppear {
+                viewModel.coordinator = coordinator
+            }
+            .background(Color.backgroundMain)
+            .customNavigationTitle(Constants.Text.title)
+            .dragToDismiss()
         }
-        .onAppear {
-            viewModel.coordinator = coordinator
-        }
-        .background(Color.backgroundMain)
-        .background(Color.white.edgesIgnoringSafeArea(.all))
-        .navigationBarTitle(Constants.Text.title)
-        .navigationBarBackButtonTitleHidden()
     }
     
     // MARK: - View Components
@@ -81,13 +81,13 @@ struct BookingView: View {
     
     private var bookingDetailsInfo: some View {
         VStack(spacing: Constants.Layout.defaultPadding) {
-            BookingDetailView(name: Constants.Text.flightFrom, description: Constants.MockText.cityFrom)
-            BookingDetailView(name: Constants.Text.country, description: Constants.MockText.country)
-            BookingDetailView(name: Constants.Text.dates, description: Constants.MockText.dates)
-            BookingDetailView(name: Constants.Text.totalDays, description: Constants.MockText.days)
-            BookingDetailView(name: Constants.Text.hotel, description: viewModel.hotel.name)
-            BookingDetailView(name: Constants.Text.room, description: viewModel.selectedRoom.name)
-            BookingDetailView(name: Constants.Text.food, description: Constants.MockText.foodService)
+            BookingDetailRow(name: Constants.Text.flightFrom, description: Constants.MockText.cityFrom)
+            BookingDetailRow(name: Constants.Text.country, description: Constants.MockText.country)
+            BookingDetailRow(name: Constants.Text.dates, description: Constants.MockText.dates)
+            BookingDetailRow(name: Constants.Text.totalDays, description: Constants.MockText.days)
+            BookingDetailRow(name: Constants.Text.hotel, description: viewModel.hotel.name)
+            BookingDetailRow(name: Constants.Text.room, description: viewModel.selectedRoom.name)
+            BookingDetailRow(name: Constants.Text.food, description: Constants.MockText.foodService)
         }
     }
     
@@ -154,10 +154,10 @@ struct BookingView: View {
     
     private var paymentInfo: some View {
         VStack(spacing: Constants.Layout.defaultPadding) {
-            PaymentDetailView(name: Constants.Text.tour, price: viewModel.totalCost)
-            PaymentDetailView(name: Constants.Text.fuelFee, price: viewModel.fuelFee)
-            PaymentDetailView(name: Constants.Text.serviceFee, price: viewModel.serviceFee)
-            PaymentDetailView(name: Constants.Text.totalPay, price: viewModel.totalSum, isTotalPrice: true)
+            PriceDetailRow(name: Constants.Text.tour, price: viewModel.totalCost)
+            PriceDetailRow(name: Constants.Text.fuelFee, price: viewModel.fuelFee)
+            PriceDetailRow(name: Constants.Text.serviceFee, price: viewModel.serviceFee)
+            PriceDetailRow(name: Constants.Text.totalPay, price: viewModel.totalSum, isTotalPrice: true)
         }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  ChangeObserver.swift
+//  ChangeObserverModifier.swift
 //  BookingHotel
 //
 //  Created by Tomiris Sessiyeva on 12/25/23.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-public struct ChangeObserver<V: Equatable>: ViewModifier {
+public struct ChangeObserverModifier<V: Equatable>: ViewModifier {
     public init(newValue: V, action: @escaping (V) -> Void) {
         self.newValue = newValue
         self.newAction = action

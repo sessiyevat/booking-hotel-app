@@ -11,7 +11,7 @@ final class SuccessPaymentViewModel: ObservableObject {
     
     // MARK: - Properties
     
-    var coordinator: AppCoordinator<MainRouter>?
+    var coordinator: AppCoordinator<MainNavigationRouter>?
     
     // MARK: - Public Methods
     

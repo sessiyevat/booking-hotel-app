@@ -11,12 +11,6 @@ import SwiftUI
 
 struct InputField: View {
     
-    public enum InputFieldType {
-        case phoneNumber(phoneMask: String)
-        case email
-        case `default`
-    }
-    
     // MARK: - Properties
     
     let type: InputFieldType
@@ -26,8 +20,8 @@ struct InputField: View {
     @Binding var isValid: Bool
     
     @State private var isEditing: Bool = false
-    @State private var isEmailValid: Bool = true
-    @State var formattedNumber: String = .empty
+    @State private var isInputValid: Bool = true
+    @State var inputPattern: String = .empty
 
     // MARK: - Body
     
@@ -45,78 +39,84 @@ struct InputField: View {
                         isEditing = editing
                     })
                     .onChange(of: text, perform: { value in
-                        self.change(value)
+                        inputPattern = value.formatInput(inputPattern, "*")
+                        text = inputPattern
                     })
-                    .font(.system(size: 16))
-                    .foregroundColor(.black)
+                    .textFieldStyle()
                     .offset(y: text.isEmpty ? .zero : Constants.offset)
-                    .keyboardType(.numbersAndPunctuation)
+                    .keyboardType(.numberPad)
                     .onAppear {
-                        formattedNumber = phoneMask
+                        isEditing = true
+                        inputPattern = phoneMask
                     }
                     .onTapGesture {
-                        text = formattedNumber
+                        text = inputPattern
                     }
                 case .email:
                     TextField(String.empty, text: $text, onEditingChanged: { editing in
                         isEditing = editing
                         if !editing {
-                            isEmailValid = text.validateEmail()
+                            isInputValid = text.isValidEmail()
                         }
                     })
-                    .font(.system(size: 16))
-                    .foregroundColor(.black)
+                    .textFieldStyle()
                     .offset(y: text.isEmpty ? .zero : Constants.offset)
-                    .keyboardType(.default)
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
                     .textContentType(.emailAddress)
-                case .default:
-                    TextField(String.empty, text: $text)
-                        .font(.system(size: 16))
-                        .foregroundColor(.black)
-                        .offset(y: text.isEmpty ? .zero : Constants.offset)
-                        .keyboardType(.default)
+                case .date(let pattern, let type):
+                    TextField(String.empty, text: $text, onEditingChanged: { editing in
+                        isEditing = editing
+                        if !editing {
+                            isInputValid = text.isValidDate(ofType: type)
+                        }
+                    })
+                    .onChange(of: text, perform: { value in
+                        inputPattern = value.formatInput(inputPattern, "_")
+                        text = inputPattern
+                    })
+                    .textFieldStyle()
+                    .offset(y: text.isEmpty ? .zero : Constants.offset)
+                    .keyboardType(.numberPad)
+                    .onAppear {
+                        isEditing = true
+                        inputPattern = pattern
+                    }
+                    .onTapGesture {
+                        text = inputPattern
+                    }
+                default:
+                    TextField(String.empty, text: $text, onEditingChanged: { editing in
+                        isEditing = editing
+                    })
+                    .textFieldStyle()
+                    .offset(y: text.isEmpty ? .zero : Constants.offset)
+                    .keyboardType(.default)
             }
         }
         .frame(height: Constants.height)
         .padding(.horizontal, Constants.padding)
-        .background(
-            (isEmailValid == false || !isEditing && text.contains("*") || (isValid && text.isEmpty))
-                ? Color.errorColor
-                : Color.backgroundMain
-        )
+        .background(isInvalid() ? Color.errorColor : Color.backgroundMain)
         .animation(.default)
         .cornerRadius(Constants.cornerRadius)
     }
     
     // MARK: - Private Methods
     
-    private func change(_ newValue: String) {
-        if !newValue.isEmpty {
-            formattedNumber = formatPhoneNumber(formattedNumber, newValue)
-            text = formattedNumber
-        }
-    }
-    
-    private func formatPhoneNumber(_ formatted: String, _ number: String) -> String {
-        var formattedString = formatted
-
-        if number.count == formattedString.count {
-            return number
-        } else if number.count < formattedString.count && number.count > 1 {
-            if let lastIndex = formattedString.indices.reversed().first(where: { formattedString[$0].isNumber }) {
-                formattedString.replaceSubrange(lastIndex...lastIndex, with: "*")
-                return formattedString
-            }
-        }
-
-        if let asteriskIndex = formattedString.firstIndex(of: "*"), let lastDigit = number.last {
-            formattedString.replaceSubrange(asteriskIndex...asteriskIndex, with: String(lastDigit))
-        }
-
-        return formattedString
-    }
+    private func isInvalid() -> Bool {
+       switch type {
+           case .phoneNumber:
+               return (!isEditing && text.contains("*")) || (isValid && text.contains("*")) || (isValid && text.isEmpty)
+           case .email:
+               return isInputValid == false || (isValid && text.isEmpty)
+           case .date:
+               return isInputValid == false || (!isEditing && text.contains("_")) || (isValid && text.contains("_")) || (isValid && text.isEmpty)
+           case .passportNo:
+               return isValid && text.isEmpty || (isValid && !text.containsLettersAndDigits())
+           case .default:
+               return isValid && text.isEmpty || (isValid && !text.containsOnlyLetters())
+       }
+   }
 }
 
 // MARK: - Constants

@@ -1,5 +1,5 @@
 //
-//  MainRouter.swift
+//  MainNavigationRouter.swift
 //  BookingHotel
 //
 //  Created by Tomiris Sessiyeva on 12/22/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public enum MainRouter: NavigationRouter {
+public enum MainNavigationRouter: NavigationRouter {
     case hotel
     case rooms(Hotel)
     case booking(Hotel, Room)

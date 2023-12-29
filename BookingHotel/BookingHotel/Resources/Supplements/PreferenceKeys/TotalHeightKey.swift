@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TotalHeightKey: PreferenceKey {
+struct TotalHeightPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat = .zero
 
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {

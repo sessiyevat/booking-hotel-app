@@ -20,7 +20,7 @@ struct TouristsListView: View {
     var body: some View {
         VStack(spacing: 8) {
             ForEach(tourists) { tourist in
-                TouristInfoView(
+                TouristDetailView(
                     tourist: self.$tourists[self.touristIndex(for: tourist)],
                     isValidInfo: $isValidInfo
                 )

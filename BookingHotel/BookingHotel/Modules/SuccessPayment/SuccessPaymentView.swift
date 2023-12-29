@@ -9,56 +9,67 @@ import SwiftUI
 
 struct SuccessPaymentView: View {
     
-    @EnvironmentObject private var coordinator: AppCoordinator<MainRouter>
+    @EnvironmentObject private var coordinator: AppCoordinator<MainNavigationRouter>
     @ObservedObject private var viewModel: SuccessPaymentViewModel = SuccessPaymentViewModel()
 
     var body: some View {
-        VStack(spacing: .zero) {
-            
-            Spacer()
-            
+        CustomNavigationView {
             VStack(spacing: .zero) {
-                ZStack {
-                    Circle()
-                        .frame(width: Constants.Layout.circleSize, height: Constants.Layout.circleSize)
-                        .foregroundColor(.backgroundMain)
-                    Text("🎉")
-                        .font(.system(size: Constants.Layout.iconSize))
-                }
                 
-                Text(Constants.Text.subtitle)
-                    .font(.system(size: 22, weight: .medium))
-                    .foregroundColor(.black)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, Constants.Layout.subtitlePadding)
+                Spacer()
                 
-                Text(String(format: Constants.Text.description, viewModel.generateOrderNo()))
-                    .font(.system(size: 16))
-                    .foregroundColor(.textPrimaryGray)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, Constants.Layout.descriptionTopPadding)
-            }
-            .padding(.horizontal, Constants.Layout.descriptionPadding)
-            
-            Spacer()
-            
-            VStack(spacing: .zero) {
-                Divider()
-                    .background(Color.lineColor)
-                CustomButton(text: Constants.Text.buttonTitle, attribute: .init()) {
-                    viewModel.goToRoot()
+                VStack(spacing: .zero) {
+                    ZStack {
+                        Circle()
+                            .frame(width: Constants.Layout.circleSize, height: Constants.Layout.circleSize)
+                            .foregroundColor(.backgroundMain)
+                        Text("🎉")
+                            .font(.system(size: Constants.Layout.iconSize))
+                    }
+                    
+                    Text(Constants.Text.subtitle)
+                        .font(.system(size: 22, weight: .medium))
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, Constants.Layout.subtitlePadding)
+                    
+                    Text(String(format: Constants.Text.description, viewModel.generateOrderNo()))
+                        .font(.system(size: 16))
+                        .foregroundColor(.textPrimaryGray)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, Constants.Layout.descriptionTopPadding)
                 }
-                .padding(.horizontal, Constants.Layout.buttonPadding)
-                .padding(.vertical, Constants.Layout.buttonTopPadding)
+                .padding(.horizontal, Constants.Layout.descriptionPadding)
+                
+                Spacer()
+                
+                VStack(spacing: .zero) {
+                    Divider()
+                        .background(Color.lineColor)
+                    CustomButton(text: Constants.Text.buttonTitle, attribute: .init()) {
+                        viewModel.goToRoot()
+                    }
+                    .padding(.horizontal, Constants.Layout.buttonPadding)
+                    .padding(.vertical, Constants.Layout.buttonTopPadding)
+                }
+                .background(Color.white)
             }
-            .background(Color.white)
+            .onAppear {
+                viewModel.coordinator = coordinator
+            }
+            .frame(height: calculateHeight())
+            .background(Color.white.edgesIgnoringSafeArea(.all))
+            .customNavigationTitle(Constants.Text.title)
+            .dragToDismiss()
         }
-        .onAppear {
-            viewModel.coordinator = coordinator
-        }
-        .background(Color.white.edgesIgnoringSafeArea(.all))
-        .navigationBarTitle(Constants.Text.title)
-        .navigationBarBackButtonTitleHidden()
+    }
+    
+    private func calculateHeight() -> CGFloat {
+        let topSafeAreaHeight = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
+        let bottomSafeAreaHeight = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+        let navigationBarHeight: CGFloat = Constants.Layout.fixedNavBarHeight
+        let totalHeight = UIScreen.main.bounds.height - topSafeAreaHeight - bottomSafeAreaHeight - navigationBarHeight
+        return totalHeight
     }
 }
 
@@ -72,6 +83,7 @@ extension SuccessPaymentView {
             static let descriptionPadding: CGFloat = 23
             static let buttonPadding: CGFloat = 16
             static let buttonTopPadding: CGFloat = 12
+            static let fixedNavBarHeight: CGFloat = 57
         }
         
         enum Text {

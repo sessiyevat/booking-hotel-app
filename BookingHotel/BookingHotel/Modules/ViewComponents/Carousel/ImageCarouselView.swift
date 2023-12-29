@@ -12,12 +12,12 @@ struct ImageCarouselView: View {
     // MARK: - Properties
     
     @State var currentIndex: Int = .zero
-    @State var images: [ImageInfo]
+    @State var imageUrls: [String]
     
     private var height: CGFloat
     
-    init(images: [String], height: CGFloat) {
-        self.images = images.map { ImageInfo(imageUrl: $0) }
+    init(imageUrls: [String], height: CGFloat) {
+        self.imageUrls = imageUrls
         self.height = height
     }
     
@@ -25,13 +25,13 @@ struct ImageCarouselView: View {
     
     var body: some View {
         VStack {
-            CarouselView(items: images, index: $currentIndex, content: { image in
+            CarouselView(items: imageUrls, index: $currentIndex, content: { imageUrl in
                 GeometryReader { proxy in
                     
                     let size = proxy.size
 
                     ImageView(
-                        url: URL(string: image.imageUrl),
+                        url: URL(string: imageUrl),
                         placeholder: {
                             ZStack {
                                 Image(systemName: "photo.on.rectangle")
@@ -56,9 +56,8 @@ struct ImageCarouselView: View {
                 }
             })
             .frame(height: height)
-            
             .overlay(
-                CarouselIndicator(count: images.count, currentIndex: $currentIndex),
+                CarouselIndicator(count: imageUrls.count, currentIndex: $currentIndex),
                 alignment: .bottom
             )
         }
