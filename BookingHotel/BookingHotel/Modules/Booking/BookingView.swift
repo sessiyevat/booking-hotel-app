@@ -19,21 +19,21 @@ struct BookingView: View {
     var body: some View {
         CustomNavigationView {
             VStack(spacing: Constants.Layout.stackSpacing) {
-                hotelBasicInfo
+                hotelInformationSection
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .sectionCustomStyle(cornerRadius: Constants.Layout.cornerRadius)
                     .padding(.top, Constants.Layout.stackSpacing)
                 
-                bookingDetailsInfo
+                bookingDetailsSection
                     .sectionCustomStyle(cornerRadius: Constants.Layout.cornerRadius)
                 
-                clientInfo
+                customerInformationSection
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .sectionCustomStyle(cornerRadius: Constants.Layout.cornerRadius)
                 
-                touristsInfo
+                touristsSection
                 
-                paymentInfo
+                paymentDetailsSection
                     .sectionCustomStyle(cornerRadius: Constants.Layout.cornerRadius)
                 
                 VStack(spacing: .zero) {
@@ -59,7 +59,7 @@ struct BookingView: View {
     
     // MARK: - View Components
     
-    private var hotelBasicInfo: some View {
+    private var hotelInformationSection: some View {
         VStack(alignment: .leading, spacing: Constants.Layout.stackSpacing) {
             RatingView(
                 rating: viewModel.hotel.rating,
@@ -79,7 +79,7 @@ struct BookingView: View {
         }
     }
     
-    private var bookingDetailsInfo: some View {
+    private var bookingDetailsSection: some View {
         VStack(spacing: Constants.Layout.defaultPadding) {
             BookingDetailRow(name: Constants.Text.flightFrom, description: Constants.MockText.cityFrom)
             BookingDetailRow(name: Constants.Text.country, description: Constants.MockText.country)
@@ -91,7 +91,7 @@ struct BookingView: View {
         }
     }
     
-    private var clientInfo: some View {
+    private var customerInformationSection: some View {
         VStack(alignment: .leading, spacing: .zero) {
             Text(Constants.Text.clientInfo)
                 .font(.system(size: 22, weight: .medium))
@@ -120,7 +120,7 @@ struct BookingView: View {
         }
     }
     
-    private var touristsInfo: some View {
+    private var touristsSection: some View {
         VStack(spacing: Constants.Layout.stackSpacing) {
             TouristsListView(tourists: $viewModel.tourists, isValidInfo: $viewModel.isNotValidInfo)
             
@@ -152,7 +152,7 @@ struct BookingView: View {
         }
     }
     
-    private var paymentInfo: some View {
+    private var paymentDetailsSection: some View {
         VStack(spacing: Constants.Layout.defaultPadding) {
             PriceDetailRow(name: Constants.Text.tour, price: viewModel.totalCost)
             PriceDetailRow(name: Constants.Text.fuelFee, price: viewModel.fuelFee)
